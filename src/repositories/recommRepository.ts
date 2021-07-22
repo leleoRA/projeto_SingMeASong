@@ -1,6 +1,7 @@
+import "../setup";
 import connection from "../database";
 
-export async function newMusic(name: string, youtubeLink: string){
+export async function newVideo(name: string, youtubeLink: string){
     await connection.query(`
         INSERT INTO items
         (name, "youtubeLink")
@@ -19,3 +20,4 @@ export async function repeatedLink(youtubeLink: string):Promise<boolean>{
     if (result.rowCount !== 0) return true;
     else return false;
 }
+

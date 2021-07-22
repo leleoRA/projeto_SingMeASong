@@ -7,6 +7,8 @@ app.use(express.json());
 
 import * as recommController from "./controllers/recommController";
 
-app.get("/recommendations", recommController.newVideo);
+app.post("/recommendations", recommController.newVideo);
+app.post("/recommendations/:id/upvote", recommController.like);
+app.post("/recommendations/:id/upvote", recommController.dislike);
 
 export default app;

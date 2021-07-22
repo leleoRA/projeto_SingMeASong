@@ -6,10 +6,11 @@ export async function newVideo(req: Request, res: Response) {
     try{
         const { name, youtubeLink } = req.body;
 
-        if (!name || !isYoutubeVideo(youtubeLink)) return res.sendStatus(400);
+        const validData = await recommService.validData(name, youtubeLink)
+        if (!validData) return res.sendStatus(400);
 
-        const result = await recommService.newMusic(name, youtubeLink);
-        if (!result) return res.sendStatus(409);
+        const repeatedLink = await recommService.newVideo(name, youtubeLink);
+        if (!repeatedLink) return res.sendStatus(409);
 
         res.sendStatus(201);
 
@@ -19,7 +20,24 @@ export async function newVideo(req: Request, res: Response) {
     }
 }
 
-function isYoutubeVideo(youtubeLink: string) {
-  var v = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-  return (youtubeLink.match(v)) ? true : false;
+export async function like(req: Request, res: Response) {
+    try{
+        const id = Number(req.params.id);
+
+        res.sendStatus(200);
+    } catch(e){
+        console.log(e);
+        res.sendStatus(500);
+    }
+}
+
+export async function dislike(req: Request, res: Response) {
+    try{
+        const id = Number(req.params.id);
+
+        res.sendStatus(200);
+    } catch(e){
+        console.log(e);
+        res.sendStatus(500);
+    }
 }
