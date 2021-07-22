@@ -5,8 +5,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/test", (req, res) => {
-  res.send("OK!");
-});
+import * as recommController from "./controllers/recommController";
+
+app.get("/recommendations", recommController.newVideo);
 
 export default app;
