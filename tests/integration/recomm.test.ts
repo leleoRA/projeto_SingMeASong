@@ -51,3 +51,40 @@ describe("POST /recommendations", () => {
 
 });
 
+describe("POST /recommendations/:id/upvote", () => {
+  it("should answer with status 200 when valid ID", async () => {
+    await connection.query(`
+      INSERT 
+      INTO items 
+      (name,"youtubeLink") 
+      VALUES ('Teste', 'https://www.youtube.com/watch?v=EbvtGsrk-7c')`);
+    const res = await agent.post('/recommendations/1/upvote');
+
+    expect(res.status).toEqual(200);
+  });
+
+  it("should answer with status 404 if ID doesn't exist", async () => {
+    const res = await agent.post('/recommendations/99999/upvote');
+
+    expect(res.status).toEqual(404);
+  });
+})
+
+describe("POST /recommendations/:id/downvote", () => {
+  it("should answer with status 200 when valid ID", async () => {
+    await connection.query(`
+      INSERT 
+      INTO items 
+      (name,"youtubeLink") 
+      VALUES ('Teste', 'https://www.youtube.com/watch?v=EbvtGsrk-7c')`);
+    const res = await agent.post('/recommendations/1/downvote');
+
+    expect(res.status).toEqual(200);
+  });
+
+  it("should answer with status 404 if ID doesn't exist", async () => {
+    const res = await agent.post('/recommendations/99999/downvote');
+
+    expect(res.status).toEqual(404);
+  });
+})
