@@ -9,6 +9,6 @@ import * as recommController from "./controllers/recommController";
 
 app.post("/recommendations", recommController.newVideo);
 app.post("/recommendations/:id/upvote", recommController.like);
-app.post("/recommendations/:id/upvote", recommController.dislike);
+app.post("/recommendations/:id/downvote", recommController.dislike);
 
 export default app;

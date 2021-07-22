@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import connection from '../database';
 
 import * as recommService from "../services/recommService";
 
@@ -24,7 +25,11 @@ export async function like(req: Request, res: Response) {
     try{
         const id = Number(req.params.id);
 
+        const result = await recommService.assigningScore(id, "yes")
+        if (!result) return res.sendStatus(404)
+
         res.sendStatus(200);
+
     } catch(e){
         console.log(e);
         res.sendStatus(500);
@@ -35,7 +40,11 @@ export async function dislike(req: Request, res: Response) {
     try{
         const id = Number(req.params.id);
 
+        const result = await recommService.assigningScore(id, "no")
+        if (!result) return res.sendStatus(404)
+
         res.sendStatus(200);
+        
     } catch(e){
         console.log(e);
         res.sendStatus(500);
