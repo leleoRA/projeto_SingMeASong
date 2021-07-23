@@ -74,3 +74,14 @@ export async function lessThan10points() {
     `);
     return result.rows;
 }
+
+export async function mostLiked(amount:number) {
+    const result = await connection.query(`
+        SELECT *
+        FROM items
+        ORDER BY score DESC
+        LIMIT $1`,
+        [amount]    
+    );
+    return result.rows;
+}

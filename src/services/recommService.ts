@@ -62,3 +62,9 @@ function getRandomIntInclusive(min:number, max:number) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export async function mostLiked(amount:number) {
+    const result = await recommRepository.mostLiked(amount);
+    if (result.length === 0) return false;
+    else return result;
+}
