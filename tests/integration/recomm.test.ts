@@ -88,3 +88,30 @@ describe("POST /recommendations/:id/downvote", () => {
     expect(res.status).toEqual(404);
   });
 })
+
+describe("GET /recommendations/random", () => {
+  it("should answer with status 200 when list is not empty", async () => {
+    await connection.query(`
+      INSERT 
+      INTO items 
+      (name,"youtubeLink",score) 
+      VALUES ('Name', 'https://www.youtube.com/watch?v=EbvtGsrk-7c', 2)`
+    );
+    await connection.query(`
+      INSERT 
+      INTO items 
+      (name,"youtubeLink",score) 
+      VALUES ('Name2', 'https://www.youtube.com/watch?v=JhXagtxvDKY', 200)`
+    );
+    const res = await agent.get('/recommendations/random');
+
+    expect(res.status).toEqual(200);
+  });
+
+  it("should answer with status 404 when list is empty", async () => {
+    const res = await agent.get('/recommendations/random');
+
+    expect(res.status).toEqual(404);
+  });
+
+})
