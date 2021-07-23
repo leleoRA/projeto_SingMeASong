@@ -48,3 +48,29 @@ export async function removeRecommendation(id:number) {
         [id]
     );
 }
+
+export async function verifyList() {
+    const result = await connection.query(`
+        SELECT *
+        FROM items
+    `);
+    return result.rowCount;
+}
+
+export async function moreThan10Points() {
+    const result = await connection.query(`
+        SELECT *
+        FROM items
+        WHERE score>10
+    `);
+    return result.rows;
+}
+
+export async function lessThan10points() {
+    const result = await connection.query(`
+        SELECT *
+        FROM items
+        WHERE score<11
+    `);
+    return result.rows;
+}

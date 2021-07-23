@@ -36,6 +36,29 @@ export async function assigningScore(id: number, review: string) {
         }
         return true;
     }
+}
 
-    
+export async function verifyList() {
+    const emptyList = await recommRepository.verifyList()
+    if (emptyList === 0) return true;
+}
+
+export async function randomRecomm() {
+    let aleatoryRecomm = Math.random();
+    let result = [];
+
+    if (aleatoryRecomm > 0.7){
+        result = await recommRepository.moreThan10Points()
+    } else{
+        result = await recommRepository.lessThan10points()
+    }
+
+    let recommendationNumber = getRandomIntInclusive(0, result.length-1);
+    return result[recommendationNumber];
+}
+
+function getRandomIntInclusive(min:number, max:number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
