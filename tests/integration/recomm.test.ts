@@ -5,12 +5,16 @@ import faker from "faker";
 import app from "../../src/app";
 import connection from "../../src/database";
 
+import { insertVideo } from "../factories/recommFactory";
+import { clearDatabase, closeConnection } from "../utils/database";
+
 beforeEach(async () => {
-  await connection.query('TRUNCATE items RESTART IDENTITY');
+  await clearDatabase();
 });
 
 afterAll(async () => {
-  await connection.end();
+  await clearDatabase();
+  await closeConnection();
 });
 
 const agent = supertest(app);
@@ -27,11 +31,8 @@ describe("POST /recommendations", () => {
     expect(res.status).toEqual(201);
   });
 
-  it("should answer with status 400 from empty name", async () => {
-    const body = {
-      name: "",
-      youtubeLink: "https://www.youtube.com/watch?v=EbvtGsrk-7c"
-    }
+  it("should answer with status 400 when body is invalid", async () => {
+    const body = {}
 
     const res = await agent.post('/recommendations').send(body);
 
@@ -53,11 +54,8 @@ describe("POST /recommendations", () => {
 
 describe("POST /recommendations/:id/upvote", () => {
   it("should answer with status 200 when valid ID", async () => {
-    await connection.query(`
-      INSERT 
-      INTO items 
-      (name,"youtubeLink") 
-      VALUES ('Teste', 'https://www.youtube.com/watch?v=EbvtGsrk-7c')`);
+    await insertVideo();
+
     const res = await agent.post('/recommendations/1/upvote');
 
     expect(res.status).toEqual(200);
@@ -72,11 +70,8 @@ describe("POST /recommendations/:id/upvote", () => {
 
 describe("POST /recommendations/:id/downvote", () => {
   it("should answer with status 200 when valid ID", async () => {
-    await connection.query(`
-      INSERT 
-      INTO items 
-      (name,"youtubeLink") 
-      VALUES ('Teste', 'https://www.youtube.com/watch?v=EbvtGsrk-7c')`);
+    await insertVideo();
+
     const res = await agent.post('/recommendations/1/downvote');
 
     expect(res.status).toEqual(200);
@@ -91,18 +86,8 @@ describe("POST /recommendations/:id/downvote", () => {
 
 describe("GET /recommendations/random", () => {
   it("should answer with status 200 when list is not empty", async () => {
-    await connection.query(`
-      INSERT 
-      INTO items 
-      (name,"youtubeLink",score) 
-      VALUES ('Name', 'https://www.youtube.com/watch?v=EbvtGsrk-7c', 2)`
-    );
-    await connection.query(`
-      INSERT 
-      INTO items 
-      (name,"youtubeLink",score) 
-      VALUES ('Name2', 'https://www.youtube.com/watch?v=JhXagtxvDKY', 200)`
-    );
+    await insertVideo();
+    
     const res = await agent.get('/recommendations/random');
 
     expect(res.status).toEqual(200);
@@ -117,18 +102,8 @@ describe("GET /recommendations/random", () => {
 
 describe("GET /recommendations/top/:amount", () => {
   it("should answer with status 200 when valid params", async () => {
-    await connection.query(`
-      INSERT 
-      INTO items 
-      (name,"youtubeLink",score) 
-      VALUES ('Name', 'https://www.youtube.com/watch?v=EbvtGsrk-7c', 2)`
-    );
-    await connection.query(`
-      INSERT 
-      INTO items 
-      (name,"youtubeLink",score) 
-      VALUES ('Name2', 'https://www.youtube.com/watch?v=JhXagtxvDKY', 200)`
-    );
+    await insertVideo();
+
     const res = await agent.get('/recommendations/top/1');
 
     expect(res.status).toEqual(200);
@@ -141,18 +116,8 @@ describe("GET /recommendations/top/:amount", () => {
   });
 
   it("should answer with list ordered by score", async () => {
-    await connection.query(`
-      INSERT 
-      INTO items 
-      (name,"youtubeLink",score) 
-      VALUES ('Name', 'https://www.youtube.com/watch?v=EbvtGsrk-7c', 2)`
-    );
-    await connection.query(`
-      INSERT 
-      INTO items 
-      (name,"youtubeLink",score) 
-      VALUES ('Name2', 'https://www.youtube.com/watch?v=JhXagtxvDKY', 200)`
-    );
+    await insertVideo();
+
     const res = await agent.get('/recommendations/top/1');
 
     expect(res.body[0].score).toEqual(200);
