@@ -113,5 +113,48 @@ describe("GET /recommendations/random", () => {
 
     expect(res.status).toEqual(404);
   });
+})
 
+describe("GET /recommendations/top/:amount", () => {
+  it("should answer with status 200 when valid params", async () => {
+    await connection.query(`
+      INSERT 
+      INTO items 
+      (name,"youtubeLink",score) 
+      VALUES ('Name', 'https://www.youtube.com/watch?v=EbvtGsrk-7c', 2)`
+    );
+    await connection.query(`
+      INSERT 
+      INTO items 
+      (name,"youtubeLink",score) 
+      VALUES ('Name2', 'https://www.youtube.com/watch?v=JhXagtxvDKY', 200)`
+    );
+    const res = await agent.get('/recommendations/top/1');
+
+    expect(res.status).toEqual(200);
+  });
+
+  it("should answer with status 404 when list is empty", async () => {
+    const res = await agent.get('/recommendations/top/2');
+
+    expect(res.status).toEqual(404);
+  });
+
+  it("should answer with list ordered by score", async () => {
+    await connection.query(`
+      INSERT 
+      INTO items 
+      (name,"youtubeLink",score) 
+      VALUES ('Name', 'https://www.youtube.com/watch?v=EbvtGsrk-7c', 2)`
+    );
+    await connection.query(`
+      INSERT 
+      INTO items 
+      (name,"youtubeLink",score) 
+      VALUES ('Name2', 'https://www.youtube.com/watch?v=JhXagtxvDKY', 200)`
+    );
+    const res = await agent.get('/recommendations/top/1');
+
+    expect(res.body[0].score).toEqual(200);
+  });
 })
