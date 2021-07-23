@@ -3,7 +3,6 @@ import supertest from "supertest";
 import faker from "faker";
 
 import app from "../../src/app";
-import connection from "../../src/database";
 
 import { insertVideo } from "../factories/recommFactory";
 import { clearDatabase, closeConnection } from "../utils/database";
