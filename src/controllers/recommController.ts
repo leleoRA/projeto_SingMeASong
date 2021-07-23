@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import connection from "../database";
 
 import * as recommService from "../services/recommService";
 
